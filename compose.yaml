@@ -1,0 +1,14 @@
+services:
+    php:
+      build:
+        context: .docker/php/
+      working_dir: /app
+      tty: true
+      stdin_open: true
+      environment:
+        - HOME
+        - COMPOSER_HOME=$HOME/.composer
+      volumes:
+        - $HOME/.ssh:$HOME/.ssh:ro
+        - $HOME/.composer:$HOME/.composer
+        - $PWD:/app

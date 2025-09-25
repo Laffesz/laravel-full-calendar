@@ -1,36 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaravelFullCalendar;
 
-use ArrayAccess;
-use DateTime;
-use Illuminate\View\Factory;
 use Illuminate\Support\Str;
+use Illuminate\View\Factory;
+use Illuminate\View\View;
 
 class Calendar
 {
+    protected Factory $view;
 
-    /**
-     * @var Factory
-     */
-    protected $view;
+    protected EventCollection $eventCollection;
 
-    /**
-     * @var EventCollection
-     */
-    protected $eventCollection;
-
-    /**
-     * @var string
-     */
-    protected $id;
+    protected string $id;
 
     /**
      * Default options array
-     *
-     * @var array
+     * @param array<string, array|bool> $items
      */
-    protected $defaultOptions = [
+    protected array $defaultOptions = [
         'header' => [
             'left' => 'prev,next today',
             'center' => 'title',
@@ -41,60 +31,46 @@ class Calendar
 
     /**
      * User defined options
-     *
-     * @var array
      */
-    protected $userOptions = [];
+    protected array $userOptions = [];
 
     /**
      * User defined callback options
-     *
-     * @var array
      */
-    protected $callbacks = [];
+    protected array $callbacks = [];
 
-    /**
-     * @param Factory         $view
-     * @param EventCollection $eventCollection
-     */
     public function __construct(Factory $view, EventCollection $eventCollection)
     {
-        $this->view            = $view;
+        $this->view = $view;
         $this->eventCollection = $eventCollection;
     }
 
     /**
      * Create an event DTO to add to a calendar
-     *
-     * @param string          $title
-     * @param string          $isAllDay
-     * @param string|DateTime $start If string, must be valid datetime format: http://bit.ly/1z7QWbg
-     * @param string|DateTime $end   If string, must be valid datetime format: http://bit.ly/1z7QWbg
-     * @param string          $id    event Id
-     * @param array           $options
-     * @return SimpleEvent
      */
-    public static function event($title, $isAllDay, $start, $end, $id = null, $options = [])
-    {
+    public static function event(
+        string $title,
+        bool $isAllDay,
+        string|\DateTime $start,
+        string|\DateTime $end,
+        string $id = null,
+        array $options = []
+    ): SimpleEvent {
         return new SimpleEvent($title, $isAllDay, $start, $end, $id, $options);
     }
 
     /**
      * Create the <div> the calendar will be rendered into
-     *
-     * @return string
      */
-    public function calendar()
+    public function calendar(): string
     {
         return '<div id="calendar-' . $this->getId() . '"></div>';
     }
 
     /**
      * Get the <script> block to render the calendar (as a View)
-     *
-     * @return \Illuminate\View\View
      */
-    public function script()
+    public function script(): View
     {
         $options = $this->getOptionsJson();
 
@@ -106,11 +82,8 @@ class Calendar
 
     /**
      * Customize the ID of the generated <div>
-     *
-     * @param string $id
-     * @return $this
      */
-    public function setId($id)
+    public function setId(string $id): self
     {
         $this->id = $id;
 
@@ -120,10 +93,8 @@ class Calendar
     /**
      * Get the ID of the generated <div>
      * This value is randomized unless a custom value was set via setId
-     *
-     * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         if (!empty($this->id)) {
             return $this->id;
@@ -136,12 +107,8 @@ class Calendar
 
     /**
      * Add an event
-     *
-     * @param Event $event
-     * @param array $customAttributes
-     * @return $this
      */
-    public function addEvent(Event $event, array $customAttributes = [])
+    public function addEvent(Event $event, array $customAttributes = []): self
     {
         $this->eventCollection->push($event, $customAttributes);
 
@@ -150,12 +117,8 @@ class Calendar
 
     /**
      * Add multiple events
-     *
-     * @param array|ArrayAccess $events
-     * @param array $customAttributes
-     * @return $this
      */
-    public function addEvents($events, array $customAttributes = [])
+    public function addEvents(array|\ArrayAccess $events, array $customAttributes = []): self
     {
         foreach ($events as $event) {
             $this->eventCollection->push($event, $customAttributes);
@@ -166,11 +129,8 @@ class Calendar
 
     /**
      * Set fullcalendar options
-     *
-     * @param array $options
-     * @return $this
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): self
     {
         $this->userOptions = $options;
 
@@ -179,21 +139,16 @@ class Calendar
 
     /**
      * Get the fullcalendar options (not including the events list)
-     *
-     * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return array_merge($this->defaultOptions, $this->userOptions);
     }
 
     /**
      * Set fullcalendar callback options
-     *
-     * @param array $callbacks
-     * @return $this
      */
-    public function setCallbacks(array $callbacks)
+    public function setCallbacks(array $callbacks): self
     {
         $this->callbacks = $callbacks;
 
@@ -202,24 +157,20 @@ class Calendar
 
     /**
      * Get the callbacks currently defined
-     *
-     * @return array
      */
-    public function getCallbacks()
+    public function getCallbacks(): array
     {
         return $this->callbacks;
     }
 
     /**
      * Get options+events JSON
-     *
-     * @return string
      */
-    public function getOptionsJson()
+    public function getOptionsJson(): string
     {
-        $options      = $this->getOptions();
+        $options = $this->getOptions();
         $placeholders = $this->getCallbackPlaceholders();
-        $parameters   = array_merge($options, $placeholders);
+        $parameters = array_merge($options, $placeholders);
 
         // Allow the user to override the events list with a url
         if (!isset($parameters['events'])) {
@@ -237,12 +188,10 @@ class Calendar
 
     /**
      * Generate placeholders for callbacks, will be replaced after JSON encoding
-     *
-     * @return array
      */
-    protected function getCallbackPlaceholders()
+    protected function getCallbackPlaceholders(): array
     {
-        $callbacks    = $this->getCallbacks();
+        $callbacks = $this->getCallbacks();
         $placeholders = [];
 
         foreach ($callbacks as $name => $callback) {
@@ -254,22 +203,17 @@ class Calendar
 
     /**
      * Replace placeholders with non-JSON encoded values
-     *
-     * @param $json
-     * @param $placeholders
-     * @return string
      */
-    protected function replaceCallbackPlaceholders($json, $placeholders)
+    protected function replaceCallbackPlaceholders(string $json, array $placeholders): string
     {
-        $search  = [];
+        $search = [];
         $replace = [];
 
         foreach ($placeholders as $name => $placeholder) {
-            $search[]  = '"' . $placeholder . '"';
+            $search[] = '"' . $placeholder . '"';
             $replace[] = $this->getCallbacks()[$name];
         }
 
-        //return str_replace($search, $replace, $json);
         return Str::replaceArray($search, $replace, $json);
     }
 }

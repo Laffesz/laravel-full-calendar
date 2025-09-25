@@ -252,3 +252,17 @@ The `script()` can be placed anywhere after `calendar()`, and must be after full
 This will generate (in February 2020):
 
 ![](http://i.imgur.com/qjgVhCY.png)
+
+#### Contribute
+
+```bash
+docker compose run --rm php composer install
+```
+
+```bash
+docker compose run --rm php php vendor/bin/ecs check --no-interaction --no-progress-bar --ansi --fix
+```
+
+```bash
+docker compose run --rm php vendor/bin/phpstan analyse --no-progress --ansi
+```

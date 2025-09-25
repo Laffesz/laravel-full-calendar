@@ -1,38 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaravelFullCalendar;
 
 use Illuminate\Support\Collection;
 
 class EventCollection
 {
-
-    /**
-     * @var Collection
-     */
-    protected $events;
+    protected Collection $events;
 
     public function __construct()
     {
         $this->events = new Collection();
     }
 
-    public function push(Event $event, array $customAttributes = [])
+    public function push(Event $event, array $customAttributes = []): void
     {
         $this->events->push($this->convertToArray($event, $customAttributes));
     }
 
-    public function toJson()
+    public function toJson(): string
     {
         return $this->events->toJson();
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->events->toArray();
     }
 
-    private function convertToArray(Event $event, array $customAttributes = [])
+    private function convertToArray(Event $event, array $customAttributes = []): array
     {
         $eventArray = [
             'id' => $this->getEventId($event),
@@ -47,7 +45,7 @@ class EventCollection
         return array_merge($eventArray, $eventOptions, $customAttributes);
     }
 
-    private function getEventId(Event $event)
+    private function getEventId(Event $event): int|null|string
     {
         if ($event instanceof IdentifiableEvent) {
             return $event->getId();
