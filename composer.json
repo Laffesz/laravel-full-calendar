@@ -1,6 +1,12 @@
 {
     "name": "laffesz/laravel-full-calendar",
     "description": "Laravel helper for FullCalendar.io. Fork of https://github.com/maddhatter/laravel-fullcalendar",
+    "keywords": [
+        "laravel",
+        "fullcalendar",
+        "calendar"
+    ],
+    "license": "MIT",
     "authors": [
         {
             "name": "Zoltán Varga",
@@ -9,6 +15,14 @@
             "role": "Developer"
         }
     ],
+    "homepage": "https://github.com/Laffesz/laravel-full-calendar",
+    "support": {
+      "email": "laffesz@gmail.com",
+      "issues": "https://github.com/Laffesz/laravel-full-calendar/issues",
+      "wiki": "https://github.com/Laffesz/laravel-full-calendar/wiki",
+      "source": "https://github.com/Laffesz/laravel-full-calendar",
+      "docs": "https://github.com/Laffesz/laravel-full-calendar"
+    },
     "require": {
         "php": "^8.0|^8.2|^8.3",
         "illuminate/database": "^8.0|^9.0|^10.0|^11.0|^12.0",
@@ -20,15 +34,6 @@
       "phpstan/phpstan": "^2.1.1",
       "phpstan/phpstan-strict-rules": "^2.0.1",
       "symplify/easy-coding-standard": "^12.5.5"
-    },
-    "license": "MIT",
-    "homepage": "https://github.com/Laffesz/laravel-full-calendar",
-    "support": {
-        "email": "laffesz@gmail.com",
-        "issues": "https://github.com/Laffesz/laravel-full-calendar/issues",
-        "wiki": "https://github.com/Laffesz/laravel-full-calendar/wiki",
-        "source": "https://github.com/Laffesz/laravel-full-calendar",
-        "docs": "https://github.com/Laffesz/laravel-full-calendar"
     },
     "autoload": {
         "psr-4": {
